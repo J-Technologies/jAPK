@@ -17,7 +17,7 @@ _Geef, na het invullen van de checklist, het samenvattend *oordeel* en een korte
 _Beschrijf hier in het kort de *context* en de *complexiteit* van de architectuur en de functionaliteit op hoog nivo._
 
 == Rapportage
-_Loop de checklist hieronder af. Zet bij score een groen, oranje of rode waardering. Voor meer informatie en tips: zie de link:../toelichting[toelichting]_
+_Loop de checklist hieronder af. Zet bij score een groen, oranje of rode waardering. Voor meer informatie en tips: zie de link:../toelichting/toelichting.adoc[toelichting]_
 
 === Architectuur
 [cols="5,8,1", options="header"]
