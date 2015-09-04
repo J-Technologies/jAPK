@@ -1,0 +1,288 @@
+= jAPK - checklist
+:imagesdir: ../images
+
+De jAPK is een kwaliteits-controle systeem voor java software, dat een indicatie geeft voor onderhoudbaarheid, beheersbaarheid en eventuele structurele problemen in of rondom een applicatie. Bij een jAPK controle wordt de applicatie geanalyseerd aan de hand van een checklist van te \'meten' onderdelen. Ieder onderdeel krijgt een score groen, oranje of rood. Dit geeft aan in hoeverre er op dit onderdeel onderhoudbaarheids- of beheersbaarheidsproblemen te verwachten zijn.
+
+De jAPK beperkt zich tot het inventariseren van potentiele onderhoudsbaarheidsproblemen. Een risico inschatting van deze problemen valt buiten scope van de jAPK. Het is zeer waarschijnlijk dat een aantal risico's acceptabel zijn, Een volledig groene jAPK is vrijwel nooit realistisch en zeker geen doel op zich.
+ 
+TIP: Deze pagina kan als template gebruikt worden bij het uitvoeren van een jAPK.
+
+== Samenvatting
+image::Japk_unknown_large.png[float="left"]
+_Beschrijf hier in het kort het *doel* van de applicatie, *wanneer* de jAPK uitgevoerd is en *door wie*._
+
+_Geef, na het invullen van de checklist, het samenvattend *oordeel* en een korte *toelichting* op de kwaliteit van deze applicatie. Vervang ten slotte de afbeelding aan de linkerkant door ''Japk_green_large.png'', ''Japk_orange_large.png'' of ''Japk_red_large.png''._
+
+== Context en architectuur
+_Beschrijf hier in het kort de *context* en de *complexiteit* van de architectuur en de functionaliteit op hoog nivo._
+
+== Rapportage
+_Loop de checklist hieronder af. Zet bij score een groen, oranje of rode waardering. Voor meer informatie en tips: zie de link:../toelichting[toelichting]_
+
+=== Architectuur
+[cols="5,8,1", options="header"]
+|===
+|Complexiteit verhogende factoren 
+|Opmerking 
+|Score
+
+|Aantal & soort interfaces
+|
+|image:Japk_green_small.png[]
+
+|Functionele complexiteit
+|
+|image:Japk_orange_small.png[]
+
+|Spatial data
+|
+|image:Japk_red_small.png[]
+
+|Historie modellen
+|
+|image:Japk_unknown_small.png[]
+
+|Complexe (organisatie-interne) interfaces
+|
+|
+|===
+
+[cols="5,8,1", options="header"]
+|===
+|Ontwerp
+|Opmerking
+|Score
+
+|Opsplitsing van verantwoordelijkheden	 	 
+|
+|
+
+|Certificaatafhandeling in Java applicatie	 	 
+|
+|
+
+|Ongeteste verborgen code	 	 
+|
+|
+
+|Module structuur: opdeling, naamgeving, aantal, niet overbodig
+|
+|
+|===
+
+[cols="5,8,1", options="header"]
+|===
+|Fundamentele issues
+|Opmerking
+|Score
+
+|Aangepaste gegenereerde code	 	 
+|
+|
+
+|Aangepaste libraries	 	 
+|
+|
+|===
+
+=== Documentatie
+[cols="5,8,1", options="header"]
+|===
+|Documentatie
+|Opmerking
+|Score
+
+|Versiebeheer tool	 	 
+|
+|
+
+|Wiki	 	 
+|
+|
+
+|Inzicht in max 2 A4-tjes	 	 
+|
+|
+
+|Up-to-date	 	 
+|
+|
+
+|Toegankelijk (geen afgeschermde directories)	 	 
+|
+|
+
+|Begrijpelijk (gestructureerd, goed leesbaar)	 	 
+|
+|
+
+|Volledig, niet te veel of te weinig	 	 
+|
+|
+|===
+
+=== Metrics
+[cols="5,8,1", options="header"]
+|===
+|Metrics
+|Opmerking
+|Score
+
+|Aantal regels code	 	 
+|
+|
+
+|Aantal classes	 	 
+|
+|
+
+|Grootte van methodes	 	 
+|
+|
+
+|Criticals, Majors	 	 
+|
+|
+
+|Test coverage
+(>60%=groen, 40-60%=oranje, <40%=rood)
+|
+|
+|===
+ 	 
+=== Code review
+[cols="5,8,1", options="header"]
+|===
+|Code review
+|Opmerking
+|Score
+
+|Hoe leest de code	 	 
+|
+|
+
+|Package structuur	 	 
+|
+|
+
+|Eenduidig gebruik van datum / tijd framework	 	 
+|
+|
+
+|Geen overbodige doorgeefluik-lagen	 	 
+|
+|
+
+|Worden libraries goed / eenduidig gebruikt	 	 
+|
+|
+
+|Kwaliteit van unit tests	 	 
+|
+|
+
+|WEB-INF/lib check	 	 
+|
+|
+
+|\'healthCheck'-functionaliteit	 	 
+|
+|
+
+|Potentiële concurrency issues
+|
+|
+
+|Javascript libraries	 	 
+|
+|
+|===
+
+=== Beveiliging
+[cols="5,8,1", options="header"]
+|===
+|Beveiliging
+|Opmerking
+|Score
+
+|Code insertion	 	 
+|
+|
+
+|Gebruikerswachtwoorden niet zichtbaar voor beheerders
+|
+|
+
+|Gebruik HTTPS
+|
+|
+
+|Frontend validaties ook op het backend
+|
+|
+
+|Geen wachtwoorden hard-coded in de applicatie
+|
+|
+
+|Kwetsbare libraries
+|
+|
+|===
+
+=== Achterstallig onderhoud
+[cols="5,8,1", options="header"]
+|===
+|Achterstallig onderhoud
+|Opmerking
+|Score
+
+|Oude versies van libraries	 	 
+|
+|
+
+|Platform	 	 
+|
+|
+
+|Java versie	 	 
+|
+|
+
+|Known issues	 	 
+|
+|
+
+|Workarounds en shortcuts	 	 
+|
+|
+|===
+
+=== Tooling en infrastructuur
+[cols="5,8,1", options="header"]
+|===
+|Tooling en infrastructuur
+|Opmerking
+|Score
+
+|Buildstraat	 	 
+|
+|
+
+|Falende build of skipTests	 	 
+|
+|
+
+|Gegenereerde files onder versiebeheer	 	 
+|
+|
+
+|Afwijkende authenticate / autorisatie	 	 
+|
+|
+
+|Portabiliteit	 	 
+|
+|
+|===
+
