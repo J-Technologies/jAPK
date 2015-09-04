@@ -185,7 +185,7 @@ _Loop de checklist hieronder af. Zet bij score een groen, oranje of rode waarder
 |
 |
 
-|\'healthCheck'-functionaliteit	 	 
+|'healthCheck'-functionaliteit	 	 
 |
 |
 
