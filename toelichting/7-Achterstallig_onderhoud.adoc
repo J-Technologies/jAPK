@@ -1,0 +1,43 @@
+== Achterstallig onderhoud
+
+Hoe verder een applicatie achterloopt, hoe meer het kost om de applicatie weer up-to-date te maken. 
+
+
+=== Oude versies van libraries
+De nieuwste versie van een library bevat meestal de laatste bugfixes, verbeteringen en meest uitgebreide functionaliteit. Als de gebruikte libraries te ver verouderderd zijn, kun je ook andersoortige probemen tegenkomen:
+
+Ondersteuning:: Fouten worden meestal alleen opgelost in de nieuwste versie van een library. Ook bij hulpvragen antwoorden de ontwikkelaars meestal vanuit de huidige stand van zaken. De laatste veranderingen van de code staan daarbij het scherpst op hun netvlies. Bij verouderde libraries krijg je dus antwoorden die misschien wel met de nieuwste versie werken, maar die bij die oudere versie juist tot meer ruis leiden.
+Afhankelijkheden met andere libraries:: De upgrade van één library kan leiden tot compatibiliteitsproblemen bij achterliggende libraries. Dit leidt tot een domino-effect. Zeker bij grotere, sterk verouderde applicaties kan dit effect een migratie onmogelijk maken.
+
+Tegelijk kunnen er verschillende redenen zijn waarom je oudere versies van libraries gebruikt:
+
+Te veel releases:: Sommige libraries brengen elke paar weken een nieuwe versie uit. Meestal zijn de verschillen tussen die versies dan relatief klein. Als de versienummers zo vaak veranderen en je ontwikkelt op dit moment niet actief aan code die die library gebruikt, zou je met een periodieke upgrade af en toe een paar versies over kunnen slaan.
+Platform-afhankelijkheden:: Wanneer het onderliggende platform oudere libraries aanbiedt (en je daar geen invloed op hebt), kan het voorkomen dat je met oudere libraries zult moeten werken. Bij het Kadaster hebben we zo min mogelijk libraries in het platform, om dit probleem te voorkomen en om de invloed van platform-migraties zo beperkt mogelijk te houden.
+
+=== Platform
+Onder platform kun je veel verstaan:
+
+Besturingssysteem::
+Virtualisatie of container host::
+Virtualisatie of container client::
+JDK/JRE runtime::
+Applicatieserver of servlet container:: Sommige applicatieservers / servlet containers bundelen libraries mee. Het kan zijn (mede vanwege classloader conflicten) dat daardoor die libraries niet ge-upgrade kunnen worden naar de nieuwste versie
+
+=== Java versie
+Let ook op minor-versienummers
+
+Voor het gemak, een lijstje met sinds wanneer de (onbetaalde) updates voor verschillende Java versies zijn afgelopen:
+|===
+| Java versie | End-of-public-updates sinds
+
+| 1.5
+| Oktober 2009
+
+| 1.6
+| Februari 2013
+
+| 1.7
+| April 2015
+|===
+=== Known issues
+=== Workarounds en shortcuts

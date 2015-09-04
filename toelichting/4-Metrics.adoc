@@ -1,0 +1,84 @@
+== Metrics
+
+Software metrics kunnen dienen als beginpunt bij het zoeken naar zwakkere punten in applicaties. De metrics vormen een eenvoudige, generieke, geautomatiseerde benadering om code smells snel op te sproren.
+
+Aan het gebruik van software metrics kleven ook een aantal nadelen:
+
+* De meetwaarden zijn moeilijk te begrijpen. De statistische benadering van technische concepten is makkelijk verkeerd te interpreteren en lastig over te brengen
+* Er zijn geen grenzen te geven waar de applicaties binnen “moeten” blijven
+* Meetwaarden die van het gemiddelde afwijken zijn niet per sé verkeerd. Ze kunnen ook gewoon anders zijn
+* Metrics zijn niet alleen makkelijk te meten, maar ook makkelijk te beïnvloeden
+
+Een groot gevaar van software metrics is dat er op gestuurd kan worden. Ontwikkelaars kunnen heel eenvoudig toewerken naar een betere test coverage of Sig-MM score. Daarmee worden de code smells verwijderd, maar de onderliggende problemen blijven gewoon in het systeem aanwezig. Zodra er op metrics gestuurd wordt, zal dit meetinstrument dus zijn waarde verliezen.
+
+Voor het opstellen van de jAPK: Begin met een beperkte set van metrics, die een zo breed mogelijk scala van invalshoeken afdekt. Verander deze set af en toe, om te voorkomen dat er alleen naar deze metrics toe wordt ontwikkeld. Blijf jezelf afvragen of de set van metrics nog relevant is en of ieder van de beschreven waarden nog toegevoegde waarde heeft.
+
+Bekijk niet alleen de Java code, neem ook de andere code, zoals Javascript, mee. Als de metrics van die andere code niet meetbaar zijn, vermeld dat dan in de categorie 'Architectuur', onder item 'Ongeteste verborgen code'.
+
+Een voorbeeld van een set van metrics, waar je mee kan beginnen:
+[cols="1,3", options="header"]
+|===
+|Item 
+|Toelichting
+
+|Aantal regels code
+.3+.^| Kijk bij de grootte-metrics naar de relatie tot de hoeveelheid functionaliteit en het aantal gebruikte / ontsloten interfaces
+
+|Aantal classes
+|
+
+|Grootte van methodes
+|
+
+|Criticals, Majors
+|Als er criticals of majors in meerdere verschilende applicaties als acceptabel worden gezien: Misschien de set van rules aanpassen?
+
+|Testcoverage
+|Bijvoorbeeld >60%=groen, 40-60%=oranje, <40%=rood
+|===
+
+=== SonarQube
+Via de SonarQube API is het mogelijk om de statistieken van alle (mits niet meer dan 500) projecten in één keer op te halen (evt. aanpassen voor andere metrics):
+
+----
+http://<SERVER>/sonar/api/resources?metrics=ncloc,functions,classes,packages&format=xml 
+----
+
+Deze output is met onderstaande XSLT in een tabel om te zetten: 
+
+----
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+ <xsl:template match="/">
+   <table>
+     <thead>
+       <tr>
+         <th>Project</th>
+         <th>ncloc</th>
+         <th>functions</th>
+         <th>classes</th>
+         <th>packages</th>
+       </tr>
+     </thead>
+     <tbody>
+       <xsl:apply-templates/>
+     </tbody>
+   </table>
+ </xsl:template>
+  
+ <xsl:template match="resource">
+   <tr>
+     <td><xsl:value-of select="name"/></td>
+     <td><xsl:value-of select="msr[key='ncloc']/val"/></td>
+     <td><xsl:value-of select="msr[key='functions']/val"/></td>
+     <td><xsl:value-of select="msr[key='classes']/val"/></td>
+     <td><xsl:value-of select="msr[key='packages']/val"/></td>
+   </tr>
+ </xsl:template>
+</xsl:stylesheet>
+----
+
+Er zijn veel verschillende metrics op te vragen, maar geen harde grenzen te geven waarbinnen de applicaties nog beheersbaar zijn. De uitkomst is sterk afhankelijk van wat “een project” is. Uitzonderingen in de statistieken kunnen wel een indicatie van ongebruikelijke en/of slecht beheersbare code zijn. Ook functioneel eenvoudige applicaties met veel code zijn een indicatie dat er iets niet klopt.
+
+Ter vergelijking met “de markt” kun je de zelfde statistieken opvragen bij SonarQube (http://nemo.sonarqube.org/api/resources?metrics=ncloc,functions,classes,packages&format=xml). Let op: hier staan veel relatief grote projecten bij, dat heeft z'n invloed op de metrics. Een voorbeeld van een getal dat lager is dan dat je eigenlijk zou verwachten: de overall line coverage van alle (gemeten) projecten is op het moment van schrijven slechts 36%.
+
+

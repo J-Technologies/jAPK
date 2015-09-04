@@ -1,0 +1,236 @@
+== Code Review
+
+=== Hoe leest de code
+Beschrijving::
+Een open deur: goed leesbare code is beter beheersbaar.
++
+Neem steeksproefgewijs een willekeurige methode (met logica). Vergeet alle context behalve de classnaam en kijk hoe goed de naam van die methode beschrijft wat hij doet. Snap je zonder context waarom deze parameters nodig zijn? Kijk in de code en probeer te begrijpen wat daar gebeurt. Zijn de namen van gebruikte variabelen logisch? Moet je sub-methodes in om te begrijpen wat er gebeurt? Zijn er nog neven-effecten die je niet uit de naam af kan leiden? Hoe veel moet je scrollen en klikken voordat je snapt wat er gebeurt?
++
+Op een hoger abstractienivo: Als de naamgeving wijst op het gebruik van design patterns, worden deze dan écht toegepast, of zijn het vrije interpretaties (komt vaak voor bij Factories). Leiden deze design patterns tot meer duidelijkheid, of maken ze de code complexer dan nodig (vaak bij Visitors).
++
+Kijk ten slotte naar de minder zichtbare paden door de code, zoals excepties, aspecten, interceptors en annotaties die invloed hebben op de applicatie-flow (bv `@Scope`) of het timing-gedrag (`@Asynchronous`). Is duidelijk welke flow er dan gevolgd wordt? Als er thread-gerelateerde logica in zit, is dan duidelijk wanneer welke code waar op wacht? Worden er `ThreadLocal` variabelen gebruikt? 
+
+Waarom::
+Als iemand die de applicatie niet kent over 5 jaar een incident moet analyseren, is hij je zeer dankbaar als de code ongeveer doet wat hij verwacht.
+
+Tips en hulpmiddelen::
+Probeer deze controle eens uit te voeren met een teksteditor in plaats van met een geavanceerde ontwikkelomgeving. Door die extra hindernis vallen de problemen nog eerder op.
+
+Overwegingen::
+Kijk als er code conventies zijn afgesproken of deze ook gevolgd worden
+
+
+=== Package structuur
+
+[red]#'TODO:'# Vindbaarheid: hoe snel kan een beheerder die weinig interne kennis van de applicatie heeft, het stukje functionaliteit vinden dat moet worden aangepast; Circulaire dependencies; JDepend
+
+Beschrijving::
+Kijk of de package structuur voldoet aan de afgesproken conventies,
++
+Kijk of dezelfde package namen niet gebruikt worden in verschillende modules
+
+Waarom::
+In een ontwikkelomgeving zijn afwijkingen in package namen nauwelijks merkbaar, maar incident analyses gaan soms met een tekst editor in een terminal of met een webbrowser tegen het code archief aan. Één conventie voor package namen maakt de code beter inzichtelijk als je beperktere middelen tot je beschikking hebt.
+
+Overwegingen::
+De package namen van unit testen kunnen wel hetzelfde zijn als die van de classes die ze testen. Unit testen maken geen deel uit van de productie code.
+
+
+=== Eenduidig gebruik van datum/tijd framework 
+
+[red]#'TODO:'# Tijdstippen controleren
+
+Beschrijving::
+In het verleden zijn er diverse datum/tijd frameworks in Java gemaakt, niet allemaal even succesvol.
++
+Kijk in de code of naast ‘het gebruikte datum/tijd framework’ ook andere frameworks gebruikt worden
+
+Waarom::
+Door één framework te gebruiken, krijg je geen verschillende interpretaties van het zelfde tijdstip. Daarnaast is het in de code een stuk begrijpelijker als de tijd altijd op één manier wordt behandeld. 
+
+Tips en hulpmiddelen::
+Een paar voorbeelden van (voor Nederland) bijzondere data/tijdstippen zijn:
++
+[cols="1,3", options="header"]
+|===
+|Datum/tijd
+|Waarom interessant
+
+|30 maart 2014 02:10
+|Bestaat niet door overgang van wintertijd naar zomertijd
+
+|26 oktober 2014 02:10
+|Bestaat twee keer door overgang van zomertijd naar wintertijd
+
+|16 mei 1940 01:20
+|Bestaat niet door overgang van Gorinchemse tijd naar Duitse tijd
+
+|17 maart 1937 00:00:04 
+|Bestaat niet door overgang van Amsterdamse tijd naar Gorinchemse tijd
+
+|11 oktober 1582
+|Bestaat niet door overgang van Juliaanse naar Gregoriaanse kalender
+|===
++
+Overigens, als de code vanuit meerdere threads wordt aangeroepen, let dan op het gebruik van class `SimpleDateFormat`. Deze class is niet thread-safe.
+
+Overwegingen::
+Het is mogelijk om class `XMLGregorianCalendar` voor het binden van JAXB objecten te vermijden, door een `XmlAdaptor` te schrijven die rechtstreeks naar “het” datum/tijd framework. Een team kan er ook voor kiezen om dit niet te doen. Dan zijn vooral de bovengenoemde tijdstippen uit de 19de eeuw interessante (unit) testgevallen.
+
+
+=== Geen overbodige doorgeefluik-lagen
+
+[red]#'TODO:'# Iets over annotaties die lagen doorbreken?
+
+Beschrijving::
+Abstractielagen kunnen vanuit de architectuur gezien logisch zijn, maar te veel lege doorgeefluik-lagen maken de applicatie onoverzichtelijker.
++
+Kijk of er (veel) classes zijn die 1 op 1 calls doorgeven aan een ‘onderliggende’ class.
+
+Waarom::
+Aan het begin van de bouw is meestal wel duidelijk welke lagen er zijn en waarom. Aan het eind van het project zijn die grenzen niet meer zo zwart-wit, eigenlijk is de indeling alleen nog maar duidelijk voor de ontwikkelaars die er vanaf het begin bij waren. Als de code een paar jaar later door heel iemand anders wordt veranderd, mag je maar hopen dat dat ongeveer in de juiste laag gebeurt.
++
+Doorgeefluik-lagen vergroten het risico op fouten later in de levenscyclus van een applicatie. Daarnaast vormt zo’n laag een extra stap waar je bij iedere foutanalyse weer doorheen moet.
+
+Overwegingen::
+Maak bij het schrappen van lagen een gezonde afweging tussen architectuur / structuur en pragmatisme. Ga niet schrappen om het schrappen.
+
+
+=== Worden libraries goed / eenduidig gebruikt
+
+[red]#'TODO:'# Eenduidige Javascript programmeerstijl (controllers, event driven vs. procedureel)?
+
+Beschrijving::
+Sommige libraries zijn op verschillende manieren te gebruiken. Zo kun je bijvoorbeeld Hibernate queries schrijven in HSL, SQL, via de Criteria api, in annotaties of in mapping files en ga nog maar even door.
++
+Veel andere libraries zijn er juist voor gemaakt om op één bepaalde manier te gebruiken. Het is vaak verleidelijk om daarvan af te wijken, zeker als je iets wilt dat eigenlijk niet met die library kan.
++
+Kijk of de libraries eenduidig gebruikt worden, en ze gebruikt worden zoals ze gebruikt horen te worden.
+
+Waarom::
+Een eenduidig gebruik van libraries maakt de applicatie overzichtelijker. Ander gebruik dan bedoeld, zeker misbruik van de gaten in een library kan leiden tot onverwachte fouten en problemen als je overgaat naar een nieuwere versie.
+
+Tips en hulpmiddelen::
+Voor libraries die je niet kent: lees de tutorial en kijk of de applicatie die lijn volgt.
+
+
+=== Kwaliteit van unit tests
+
+[red]#'TODO:'# User interface testen? Javascript test coverage meten?
+
+Beschrijving::
+Bij applicaties die al lang bestaan willen de kwaliteit van de unit testen en de test coverage nog wel eens verwateren. Aan de andere kant van het spectrum leidt te veel focus op een hoge test coverage (makkelijk stuur-instrument voor managers) er nog wel eens toe dat die coverage een doel op zich wordt. Het doel van unit testen is borgen dat de code goed functioneert. Unit testen die die dat niet doen hebben weinig toegevoegde waarde. Ze kunnen zelfs vernieuwing in de weg staan.
++
+Kijk of de unit testen
+
+* begrijpelijk zijn (inclusief het initialisatie-gedeelte)
+* functioneel zin hebben
+* de belangrijkste functionaliteit goed afdekken
+* testen wat je verwacht dat ze testen
+* toegevoegde waarde hebben ten opzichte van de andere unit testen
+* de correcte werking ook echt controleren, niet alleen maar de code aanroepen
+* niet te breed excepties afvangen
+
+Waarom::
+Goede unit testen zijn een \'tweede client' van de code. Code die meerdere clients ondersteunt is meestal beter voorbereid op toekomstige veranderingen dan code die geschreven is op één specifiek soort gebruik. Als je een unit test schrijft, refactor (of maak) de code dan zó, dat zowel het normale gebruik als de test-flow op een nette manier wordt ondersteund.
++
+Slechte unit testen kunnen een extra hindernis vormen bij refactorings. Ze wekken ten onrechte de schijn van kwalitatief goede code.
+
+Tips en hulpmiddelen::
+* Kijk in de bevindingenregistratie of er bevindingen in staan die eigenlijk met een unit test afgedekt zouden moeten zijn.
+* Als je wijzigingen doorvoert, kijk of er een gezonde balans is tussen de hoeveelheid code en de hoeveelheid unit testen die je aanpast
+* Kijk of mutation testing (bv http://pitest.org/) je tot nieuwe inzichten brengt
+
+
+=== WEB-INF/lib check
+
+[red]#'TODO:'# Hulpmiddelen voor niet-maven projecten, naam voor niet-webapps
+
+Beschrijving::
+Controle van de gebouwde applicatie op inconsistenties in de set van gebruikte libraries
++
+Kijk hierbij naar de volgende soorten inconsistenties:
+
+* Zijn er jar files die twee keer voorkomen, met verschillende versienummers
+* Zitten er jar files bij die ook al door het onderliggende platform geleverd worden
+* Zijn er sets van jar files die allemaal het zelfde versienummer zouden moeten hebben, maar dat niet hebben
+* Zijn er jar files die je niet kent, wat zijn dit voor libraries en door wie worden ze gebruikt
+
+Waarom::
+* Verschillende versies van libraries bevatten verschillende versies van de zelfde classes. Dit kan tot classloading conflicten leiden (`NoSuchMethodError`, `ClassNotFoundException`), maar soms ook tot ander gedrag dan je zou verwachten.
+
+* Sets van gerelateerde libraries kunnen onderlinge afhankelijkheden hebben. Als de versienummers binnen zo’n set verschillen, is het mogelijk dat deze onderlinge afhankelijkheden niet meer kloppen.
+
+* Het is goed om te weten wat voor totaalpakket je oplevert. Onbekende libraries horen daar niet bij, dus zorg dat je minimaal ongeveer weet wat de libraries doen
+
+Tips en hulpmiddelen::
+Dependency viewer in je ontwikkelomgeving, mvn dependency:tree
+
+=== 'healthCheck'-functionaliteit
+
+Beschrijving::
+Bij iedere applicatie willen er op een gegeven moment mensen weten of hij goed geïnstalleerd is. Dit kan door (een deel van) de functionele flow te doorlopen, maar een applicatie kan hier ook een aparte pagina voor hebben. Kijk of zo’n soort pagina bestaat.
++
+Typische voorbeelden van wat je op deze pagina zou verwachten:
+
+* Als de applicatie met het file systeem werkt: kijk of het pad bestaat
+* Als de applicatie een database gebruikt: voer een dummy query uit
+* Als er een achterliggende webservice wordt aangeroepen: roep de service aan
+* Als er een JMS queue gebruikt wordt, probeer de queue te browsen
++
+Kijk of deze pagina compleet is, of alle componenten waar je afhankelijk van bent gecontroleerd worden.
+
+Waarom::
+Na installatie en bij onverwachte fouten is deze pagina een eerste check van de infrastructuur. Deze controle kan door operationeel beheerders worden uitgevoerd. Zolang deze pagina fouten geeft, hoef je als ontwikkelaar niet uit je bed gebeld te worden.
+
+Tips en hulpmiddelen::
+Het https://dropwizard.github.io/metrics[DropWizard Metrics]-project bevat HealthChecks. Deze library kun je gebruiken, of je er door laten inspireren. De rest van het Metrics-project biedt trouwens run-time monitoringfunctionaliteit, zeker het overwegen waard om in je applicatie op te nemen.
+
+Overwegingen::
+Let bij het bouwen van zo’n controle pagina op de volgende punten:
+* Ga niet uit van specifieke data in een database of achterliggende service, dat kan van omgeving tot omgeving variëren
+* Laat de controles niets veranderen. Gebruik alleen controles die geen effect hebben (lees-acties)
+* Een service aanroepen met ongeldige data en een specifieke fout terugkrijgen is een prima manier om te controleren of de service benaderbaar is
+
+Deze controlepagina is niet een uitputtend middel voor infrastructuurmonitoring. Het gaat om een eerste en gemakkelijke check. Als de pagina bijvoorbeeld controleert of een directory bestaat, weet je nog niet of er genoeg ruimte is op het filesysteem en of je wel schrijfrechten hebt.
+
+=== Potentiële concurrency issues
+[red]#'TODO:'# Niet thread-safe code
+
+[red]#'TODO:'# Mislukte pogingen tot verhelpen thread-safety problemen
+
+==== Niet thread-safe classes
+Naast concurrency-problemen in je eigen code, zijn er ook veel classes waar je gebruik van maakt, die niet parallel door meerdere threads kunnen worden gebruikt.
+
+Mijn persoonlijke favoriete core-classes die thread-gerelateerde problemen kunnen geven:
+
+[cols="1,5", options="header"]
+|====
+|Class
+|Oplossing
+
+|`HashMap`
+|Gebruik `ConcurrentHashMap`
+
+|`SimpleDateFormat`
+|Gebruik Joda dateTime
+
+|`CharsetEncoder` / `CharsetDecoder`
+|Wrap in een `ThreadLocal`
+
+|`Vector`
+|Afhankelijk van hoe de lijst wordt gebruikt. Soms volstaat een `ArrayList`, soms (bijvoorbeeld) een `CopyOnWriteArrayList` of een wrapper zoals `Collections.synchronizedList` of `Collections.unmodifyableList`
+|====
+
+=== Javascript libraries
+
+[red]#'TODO:'# (Onbekende) javascript libraries; zijn versies herleidbaar (wordt er een dependency management tool gebruikt);
+
+Is de build tooling logisch (bv Ruby script voor SASS -> css conversie, terwijl de rest NPM gebruikt)
+
+Is het al tijd om te standariseren op...
+
+* NPM / Bower / Grunt / Gulp
+* Karma / Jasmine / Protractor
+* Directory structuren
+

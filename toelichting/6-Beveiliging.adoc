@@ -1,0 +1,67 @@
+== Beveiliging
+
+Disclaimer::
+Software beveiliging is een heel breed vakgebied, dat vele invalshoeken kent. De controles in de jAPK zijn geenszins compleet. Ze noemen enkel de meest voorkomende beveiligingsproblemen.
++
+Zodra beveiliging een belangrijk onderdeel van je applicatie is, zullen de eisen een stuk zwaarder zijn dan hier wordt beschreven.
+
+=== Code Injection
+==== SQL Injection
+Bij https://nl.wikipedia.org/wiki/SQL-injectie[SQL Injection] probeert een aanvaller andere queries op de database uit te voeren dan de bedoeling is. Als SQL queries worden opgebouwd met String concatenatie, kunnen gebruikers willekeurige queries op de database uitvoeren.
+
+Bij de eenvoudigste variant van SQL Injectie heeft een webpagina een zoekveld, waarvan de waarde rechtstreeks in de query komt te staan. Stel nu dat de applicatie de database query maakt door Strings samen te voegen: `"SELECT * FROM persoon WHERE achternaam = '" + invoer + "';"`. Als in het invoerveld nu de waarde `"' OR 'a' = 'a"` wordt ingevuld, levert de query alle data van alle personen uit de database.
+
+SQL Injection beperkt zich niet alleen tot webapplicaties, het kan overal voorkomen waar invoer wordt afgehandeld. Stelregel voor het voorkomen: gebruik nooit String concatenatie voor database queries. Door de zoekvelden als parameters in een https://en.wikipedia.org/wiki/Prepared_statement[prepared statement] op te nemen kun je SQL Injection voorkomen. 
+
+==== Injection zonder SQL
+Het hierboven beschreven injection-concept (met specifieke input andere data proberen te lezen/schrijven) gaat veel breder dan SQL. Als een applicatie bijvoorbeeld van een file systeem leest en de filenaam bepaalt op basis van de invoer, wees dan extra voorzichtig met punten en forward / backward slashes. Controleer voor de zekerheid ook de bijbehorende (url/xml/unicode) escape karakters, beter een keer te veel controleren dan te weinig.
+
+==== Cross site scripting
+Een andere variant van code injection is https://en.wikipedia.org/wiki/Cross-site_scripting[cross site scripting]. Daarbij probeert de aanvaller, meestal met vergelijkbare escape karakters als bij SQL Injection, een stuk JavaScript op een webpagina te zetten, om daar mee de controle over de browser van de gebruiker te krijgen. Input validaties en output encoding zijn manieren om cross site scripting tegen te gaan.
+
+=== Gebruikerswachtwoorden niet zichtbaar voor beheerders
+==== Inloggen met HTTP POST
+
+Als een web server een HTTP request verwerkt, wordt dit standaard gelogd in een access log. Sommige netwerk componenten 'ergens' tussen de browser en de server loggen ook de requests die ze doorgeven. De applicatie kan niet afdwingen dat dit niet gelogd wordt. Meestal staat de opgevraagde URL in deze log files. 
+
+Bij een HTML form dat een HTTP GET uitvoert, bevat de URL alle data die de gebruiker opgeeft. Als een inlog-pagina een HTTP GET verstuurd, komen de gebruikersnaam en het wachtwoord dus in de log files te staan.
+
+Bij een HTTP POST bevat de URL alleen het pad dat verwijst naar de webserver, naar het deel dat het inloggen afhandelt. De echte form data staat in de request body. De kans dat dat 'ergens onderweg' of op de eigen server gelogd wordt is een stuk kleiner.
+
+==== Geen wachtwoorden in log files
+==== Geen wachtwoorden in database
+
+=== Gebruik van HTTPS
+=== Frontend validaties ook op het backend
+
+Bij een web applicatie kan een (javascript) client de invoer controleren, voordat hij deze naar het backend stuurt. Een aanvaller kan, buiten die controles om, de requests aanpassen, waardoor hij 'onmogelijke' data naar het backend stuurt. Controleer daarom altijd in het backend of de input geldig is, ook als dit in het frontend al gebeurt. 
+
+Controle input op toegestane karakters::
+Een applicatie die geen input accepteert is goed beveiligd tegen ongeldige input. Een applicatie die alle mogelijke invoer accepteert staat wijd open voor mogelijke aanvallen. Door (functioneel) te bepalen welke invoer geldig is en alleen die invoer te accepteren, beperk je de kans op misbruik door ongeldige invoer.
++
+Kijk, als je bepaalt wat geldige input is, vooral of enkele en dubbele quotes, forward en backward slashes, ampersand-tekens en diakrieten functioneel gewenst zijn.
+
+=== Kwetsbare libraries
+Met de (org.owasp) dependency-check-maven plugin kun je een overzicht maken van de libraries waarvan beveiligingsissues bekend zijn. De controle op deze libraries is (bijvoorbeeld) in een Maven build op te nemen als reporting plugin, bij het genereren van de site:
+----
+<reporting>
+  <plugins>
+    <plugin>
+      <groupId>org.owasp</groupId>
+      <artifactId>dependency-check-maven</artifactId>
+      <version>1.2.11</version> <!-- Voor meest recente versie, zie http://mvnrepository.com/artifact/org.owasp/dependency-check-maven -->
+      <configuration>
+        <aggregate>true</aggregate>
+      </configuration>
+      <reportSets>
+        <reportSet>
+          <reports>
+            <report>check</report>
+          </reports>
+        </reportSet>
+      </reportSets> 
+    </plugin>
+  </plugins>
+</reporting> 
+----
+
