@@ -171,7 +171,7 @@ Dependency viewer in je ontwikkelomgeving, mvn dependency:tree
 Beschrijving::
 Bij iedere applicatie willen er op een gegeven moment mensen weten of hij goed geïnstalleerd is. Dit kan door (een deel van) de functionele flow te doorlopen, maar een applicatie kan hier ook een aparte pagina voor hebben. Kijk of zo’n soort pagina bestaat.
 +
-Typische voorbeelden van wat je op zo’n pagina zou verwachten:
+Typische voorbeelden van wat je op deze pagina zou verwachten:
 
 * Als de applicatie met het file systeem werkt: kijk of het pad bestaat
 * Als de applicatie een database gebruikt: voer een dummy query uit
@@ -181,10 +181,10 @@ Typische voorbeelden van wat je op zo’n pagina zou verwachten:
 Kijk of deze pagina compleet is, of alle componenten waar je afhankelijk van bent gecontroleerd worden.
 
 Waarom::
-Na installatie en bij onverwachte fouten is deze pagina een eerste check van de infrastructuur. Dit kan door technisch beheerders worden uitgevoerd, daar hoef je als ontwikkelaar niet voor uit je bed gebeld te worden.
+Na installatie en bij onverwachte fouten is deze pagina een eerste check van de infrastructuur. Deze controle kan door operationeel beheerders worden uitgevoerd. Zolang deze pagina fouten geeft, hoef je als ontwikkelaar niet uit je bed gebeld te worden.
 
 Tips en hulpmiddelen::
-Het DropWizard Metrics project (https://dropwizard.github.io/metrics) bevat HealthChecks. Dat is een implementatie van dit concept. De rest van het Metrics project biedt trouwens run-time monitoring-functionaliteit, zeker het overwegen waard om in je applicatie op te nemen.
+Het https://dropwizard.github.io/metrics[DropWizard Metrics]-project bevat HealthChecks. Deze library kun je gebruiken, of je er door laten inspireren. De rest van het Metrics-project biedt trouwens run-time monitoringfunctionaliteit, zeker het overwegen waard om in je applicatie op te nemen.
 
 Overwegingen::
 Let bij het bouwen van zo’n controle pagina op de volgende punten:
@@ -192,8 +192,7 @@ Let bij het bouwen van zo’n controle pagina op de volgende punten:
 * Laat de controles niets veranderen. Gebruik alleen controles die geen effect hebben (lees-acties)
 * Een service aanroepen met ongeldige data en een specifieke fout terugkrijgen is een prima manier om te controleren of de service benaderbaar is
 
-Deze controle pagina is niet heilig. Als de pagina bijvoorbeeld controleert of een directory bestaat, weet je nog niet of er genoeg ruimte is op de harde schijf en of je wel schrijfrechten hebt.
-
+Deze controlepagina is niet een uitputtend middel voor infrastructuurmonitoring. Het gaat om een eerste en gemakkelijke check. Als de pagina bijvoorbeeld controleert of een directory bestaat, weet je nog niet of er genoeg ruimte is op het filesysteem en of je wel schrijfrechten hebt.
 
 === Potentiële concurrency issues
 [red]#'TODO:'# Niet thread-safe code
