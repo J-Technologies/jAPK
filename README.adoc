@@ -1,0 +1,2 @@
+= jAPK
+De jAPK, de Algemene periodieke keuring voor Java applicaties, is een systeem voor het inventariseren van de kwaliteit van een Java applicatie.
