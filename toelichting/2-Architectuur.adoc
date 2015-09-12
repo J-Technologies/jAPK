@@ -1,11 +1,19 @@
 == Architectuur
-De grens tussen architectuur en ontwerp is erg lastig vast te definiëren. Voor deze jAPK kiezen we onder de noemer architectuur: de conceptuele indeling van verantwoordelijheden binnen het systeem, de structuur op een hoog abstractienivo en de fundamentele issues die beheer en onderhoud bovengemiddeld zullen belemmeren.
-
-
+De grens tussen architectuur en ontwerp is erg lastig vast te definiëren. Voor deze jAPK verstaan we onder architectuur: de conceptuele indeling van verantwoordelijheden binnen het systeem, de structuur op een hoog abstractienivo en de fundamentele issues die beheer en onderhoud bovengemiddeld zullen belemmeren.
 
 === Complexe (organisatie-interne) interfaces
 
+Beschrijving::
 Vaak vanuit enterprise architectuur gedreven, universeel toepasbare interfaces waarvan de specifieke invulling van applicatie tot applicatie verschilt.
+
+Waarom::
+Op een hoog abstractienivo lijkt het handig als alle systemen binnen een organisatie één taal spreken. In de praktijk leidt dit vaak tot zulke abstracte interfaces, dat alle applicaties hun eigen interpretatie van die taal hanteren. Door de interpretatieverschillen verergert een organisatie-breed interface protocol vaak het communicatieprobleem tussen applicaties, in plaats van dat het dat oplost. Bovendien remt zo'n interface de innovatie: Om een nieuwe versie van 'de interface' te introduceren, moeten álle applicaties over naar een nieuwe versie.
+
+Tips en hulpmiddelen::
+Dit soort interfaces zijn meestal herkenbaar aan veel of grote XSD's, vaak gegenereerd vanuit een modelleertool. Indicatoren van wanneer deze interfaces meer op een ivoren toren gericht zijn dan op de realiteit: 
+* Veelvuldig terugkomen van termen als 'generiek' en 'universeel'
+* Meerdere versies van deze XSDs tegelijk in één applicatie
+* Generieke key-value paren in de interface, voor data die niet in de interface zit.
 
 === Opsplitsing van verantwoordelijkheden
 *Stelregel:* Logica alleen in de applicatie, data alleen in de database
@@ -18,11 +26,11 @@ In een ‘ideale’ systeemarchitectuur worden verschillende verantwoordelijkhed
 Waarom::
 * Zodra applicatielogica over verschillende componenten wordt verdeeld, worden vooral foutpaden in de code een tricky aangelegenheid. Juist die foutpaden zijn nogal eens een ondergeschoven kindje in het testproces.
 * Uitzoeken van problemen over verschillende log files heen, als deze al te vinden en te correleren zijn, is lastiger dan wanneer de flow in 1 bestand te volgen is.
-* Applicatie code en database code worden nogal eens in verschillende code bases opgeslagen. Logica in verschillende code bases vergroot het risico op incompatibiliteit, data in verschillende bronnen vergroot het risico op inconsistenties.
+* Applicatie code en database code worden nogal eens in verschillende code bases opgeslagen en volgen soms een net-niet afgestemd release proces. Logica in verschillende code bases vergroot het risico op incompatibiliteit, data in verschillende bronnen vergroot het risico op inconsistenties.
 * Unit testen werken makkelijker tegen een initieel lege of gedefinieerde dataset. Testen tegen een in-memory database zorgt er voor dat de unit testen niet afhankelijk zijn van de vulling van een database. Logica in de database is vaak database-afhankelijk, waardoor de unit testen niet meer tegen een in-memory database kunnen worden gedraaid
 
 Tips en hulpmiddelen::
-Probeer de applicatie te draaien op een vers geïnstalleerd systeem, kijk of er environment variabelen of data files nodig zijn om de applicatie werkend te krijgen. Kijk of het database schema stored procedures of views met complexe logica bevat. Vooral database triggers die bij een commit worden uitgevoerd zijn lastig, omdat de java-code dan al veel verder is dan de plek waar de fout gemaakt werd. Draai de unit testen met en in-memory database 
+Probeer de applicatie te draaien op een vers geïnstalleerd systeem, kijk of er environment variabelen of data files nodig zijn om de applicatie werkend te krijgen. Kijk of het database schema stored procedures of views met complexe logica bevat. Vooral database triggers die bij een commit worden uitgevoerd zijn lastig, omdat de applicatie-code dan al veel verder is dan de plek waar de fout gemaakt werd. Draai de unit testen met een in-memory database.
 
 Grenswaarden:: 
 Deze richtlijn is niet zwart-wit, er zijn diverse grensgevallen en redenen om er van af te wijken. Een paar voorbeelden:
@@ -39,6 +47,7 @@ Deze database logica zorgt wel voor veranderingen in de database, maar alleen va
 * Views
 * Data die niet in een database staat
 * Property files
+* Vanwege performance is het soms nodig om logica in een database uit te voeren
 
 === Ongeteste verborgen code
 [red]#'TODO:'#
